@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"/ -> %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"logo.svg -> %{http_code}\\\\n\" http://localhost:3000/logo.svg)",
+      "Bash(curl -s -o /dev/null -w \"icon.svg -> %{http_code}\\\\n\" http://localhost:3000/icon.svg)",
+      "Bash(curl -s http://localhost:3000/logo.svg)",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__resize_page",
+      "mcp__chrome-devtools__take_screenshot"
+    ]
+  }
+}

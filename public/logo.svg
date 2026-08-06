@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="HML Prism logo">
+  <defs>
+    <linearGradient id="leftFace" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#1c4f79"/>
+      <stop offset="1" stop-color="#07202f"/>
+    </linearGradient>
+    <linearGradient id="rightFace" x1="0.1" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#26608c"/>
+      <stop offset="1" stop-color="#0d2f4a"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.85"/>
+    </linearGradient>
+    <radialGradient id="innerGlow" cx="0.5" cy="0.4" r="0.7">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.75" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.45"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Refracted spectrum (behind the prism, emerging from the right face) -->
+  <g transform="translate(248 206) rotate(-30)">
+    <g>
+      <rect x="-24" y="-42" width="292" height="12" fill="#FF5A5A"/>
+      <rect x="-24" y="-30" width="292" height="12" fill="#FF9F3A"/>
+      <rect x="-24" y="-18" width="292" height="12" fill="#FFE24A"/>
+      <rect x="-24" y="-6"  width="292" height="12" fill="#45D67A"/>
+      <rect x="-24" y="6"   width="292" height="12" fill="#3AA0FF"/>
+      <rect x="-24" y="18"  width="292" height="12" fill="#6C6BFF"/>
+      <rect x="-24" y="30"  width="292" height="12" fill="#B45CFF"/>
+      <!-- soft fade toward the far end of the beam -->
+      <rect x="-24" y="-42" width="292" height="84" fill="url(#fade)"/>
+    </g>
+  </g>
+
+  <!-- Incoming white light beam entering the left face -->
+  <polygon points="8,152 8,182 176,120 176,96" fill="url(#beam)"/>
+
+  <!-- Prism body: two shaded facets forming a 3D pyramid -->
+  <polygon points="170,88 55,360 202,428" fill="url(#leftFace)"/>
+  <polygon points="170,88 202,428 336,344" fill="url(#rightFace)"/>
+
+  <!-- Internal refraction highlight -->
+  <polygon points="170,88 150,250 250,206" fill="url(#innerGlow)"/>
+
+  <!-- Edge highlights -->
+  <g stroke-linecap="round" fill="none">
+    <line x1="170" y1="88" x2="202" y2="428" stroke="#4d86b8" stroke-opacity="0.7" stroke-width="3"/>
+    <line x1="170" y1="88" x2="55"  y2="360" stroke="#2b5f8c" stroke-opacity="0.5" stroke-width="2.5"/>
+    <line x1="170" y1="88" x2="336" y2="344" stroke="#2b5f8c" stroke-opacity="0.5" stroke-width="2.5"/>
+  </g>
+</svg>

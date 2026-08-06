@@ -1,0 +1,175 @@
+/**
+ * Central site configuration for HML Prism.
+ * Update brand details, navigation and contact info here — components read
+ * from this file so copy changes live in one place.
+ */
+
+export const site = {
+  name: "HML Prism",
+  tagline: "Advertising that refracts your brand into measurable growth.",
+  description:
+    "HML Prism is a digital marketing and advertising agency helping brands grow through web & mobile advertising, SMS & email marketing, and high-impact display campaigns.",
+  url: "https://hmlprism.example.com",
+  email: "hmlprism@gmail.com",
+} as const;
+
+export const nav: { label: string; href: string }[] = [
+  { label: "Home", href: "/" },
+  { label: "Services", href: "/services" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+export const socials: { label: string; href: string; icon: string }[] = [
+  { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
+  { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
+  { label: "Twitter / X", href: "https://twitter.com", icon: "twitter" },
+  { label: "YouTube", href: "https://youtube.com", icon: "youtube" },
+  { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
+];
+
+export const services: {
+  title: string;
+  slug: string;
+  blurb: string;
+  points: string[];
+  icon: string;
+}[] = [
+  {
+    title: "Web & Mobile Advertising",
+    slug: "web-mobile-advertising",
+    blurb:
+      "Full-funnel paid campaigns across search, social and in-app inventory — engineered to reach the right audience on every screen.",
+    points: ["Search & social ads", "In-app placements", "Retargeting funnels"],
+    icon: "monitor",
+  },
+  {
+    title: "SMS & Email Marketing",
+    slug: "sms-email-marketing",
+    blurb:
+      "Lifecycle messaging that turns subscribers into buyers — segmented, automated and continuously optimized for conversions.",
+    points: ["Automated journeys", "Audience segmentation", "A/B tested sends"],
+    icon: "mail",
+  },
+  {
+    title: "Display Advertising",
+    slug: "display-advertising",
+    blurb:
+      "Eye-catching programmatic and native display creative that builds awareness and keeps your brand top of mind.",
+    points: ["Programmatic buying", "Native & banner creative", "Brand-safe placements"],
+    icon: "layout",
+  },
+];
+
+export const stats: { label: string; value: number; suffix: string }[] = [
+  { label: "Boost in Traffic", value: 180, suffix: "%" },
+  { label: "Conversion Rate", value: 62, suffix: "%" },
+  { label: "Sales Increase", value: 240, suffix: "%" },
+  { label: "Happy Clients", value: 320, suffix: "+" },
+];
+
+export const steps: { title: string; description: string }[] = [
+  {
+    title: "Free Consultation",
+    description:
+      "We learn your goals, audit your current marketing and map the fastest path to growth — no strings attached.",
+  },
+  {
+    title: "Choose Package",
+    description:
+      "Pick a tailored plan that fits your budget and objectives, with clear deliverables and transparent pricing.",
+  },
+  {
+    title: "Launch & Optimize",
+    description:
+      "We launch your campaigns, track performance in real time and refine relentlessly to maximize your return.",
+  },
+];
+
+export const faqs: { question: string; answer: string }[] = [
+  {
+    question: "What services does HML Prism offer?",
+    answer:
+      "We provide web & mobile advertising, SMS & email marketing, and display advertising — plus strategy, creative and analytics to tie every campaign together.",
+  },
+  {
+    question: "How does your process work?",
+    answer:
+      "It starts with a free consultation, followed by a tailored package, then campaign launch. From there we monitor performance and optimize continuously.",
+  },
+  {
+    question: "Can campaigns be customized to my business?",
+    answer:
+      "Absolutely. Every engagement begins with your goals and audience. We build bespoke strategies rather than forcing your brand into a template.",
+  },
+  {
+    question: "How much experience does your team have?",
+    answer:
+      "Our specialists have run campaigns across e-commerce, SaaS, local services and more, managing budgets from startup-scale to enterprise.",
+  },
+  {
+    question: "What makes HML Prism different?",
+    answer:
+      "We combine data-driven media buying with sharp creative and radical transparency — you always know what we are doing and why it works.",
+  },
+  {
+    question: "How do I get started?",
+    answer:
+      "Book your free consultation through the contact form. We will reply within one business day to schedule a call and outline next steps.",
+  },
+];
+
+export const values: { title: string; description: string; icon: string }[] = [
+  {
+    title: "Tailored Solutions",
+    description: "Strategies built around your goals — never off-the-shelf.",
+    icon: "target",
+  },
+  {
+    title: "Client-Centric Approach",
+    description: "Your success is our metric. We work as an extension of your team.",
+    icon: "users",
+  },
+  {
+    title: "Innovation-Driven",
+    description: "We test emerging channels and tactics so you stay ahead.",
+    icon: "spark",
+  },
+  {
+    title: "Transparent Reporting",
+    description: "Clear dashboards and honest numbers on every campaign.",
+    icon: "chart",
+  },
+];
+
+export const skills: { label: string; value: number }[] = [
+  { label: "Design", value: 92 },
+  { label: "App Development", value: 85 },
+  { label: "Digital Marketing", value: 96 },
+  { label: "Content Creation", value: 88 },
+];
+
+export const capabilities: { title: string; description: string; icon: string }[] = [
+  {
+    title: "Graphics Design",
+    description: "Scroll-stopping visuals and ad creative that reflect your brand.",
+    icon: "layout",
+  },
+  {
+    title: "App Development",
+    description: "Fast, reliable mobile and web experiences that convert.",
+    icon: "monitor",
+  },
+  {
+    title: "Digital Marketing",
+    description: "Performance campaigns across every channel that matters.",
+    icon: "spark",
+  },
+  {
+    title: "Brand Development",
+    description: "Positioning and identity that make your brand unmistakable.",
+    icon: "target",
+  },
+];
+
+export const currentYear = new Date().getFullYear();
