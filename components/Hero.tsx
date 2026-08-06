@@ -10,10 +10,19 @@ import {
   useReducedMotion,
   type Variants,
 } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { Button } from "./Button";
 import { Icon } from "./Icon";
 import { Magnetic } from "./Magnetic";
 import { PrismWebGL } from "./PrismWebGL";
+
+// Register plugins client-side only (same client-only guarding convention as
+// HowItWorks and the OGL WebGL component). registerPlugin is idempotent.
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP, ScrollTrigger);
+}
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -29,9 +38,76 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * `opacity` — the hidden variant keeps `opacity: 1`, so the server-rendered
  * markup is fully visible (just offset a few px). If hydration is delayed or
  * fails entirely, the hero stays readable instead of stuck at `opacity: 0`.
+ *
+ * Scroll-exit parallax (GSAP ScrollTrigger, lighter sibling of HowItWorks'
+ * pin/scrub — no pin, just scroll-linked transforms): as the hero scrolls past,
+ * the copy column drifts up faster than native scroll and fades to 0, while the
+ * prism panel drifts up more slowly and scales down slightly, so the two layers
+ * separate in depth. GSAP animates dedicated WRAPPER divs (`copyRef`,
+ * `panelRef`) — never the Framer Motion elements — so the entrance (Framer) and
+ * the scroll-exit (GSAP) are two systems on two different DOM nodes and never
+ * fight over `transform`/`opacity`. SSR-safe: the wrappers render with no inline
+ * style (opacity 1, no transform); GSAP only applies the scrub start state on
+ * the client, inside a reduced-motion-gated matchMedia, so reduced-motion / no-JS
+ * users simply scroll the hero natively.
  */
 export function Hero() {
   const reduced = useReducedMotion();
+
+  // GSAP scroll-exit targets — plain wrappers, kept separate from the Framer
+  // Motion nodes so the two animation systems never share a transform target.
+  const rootRef = useRef<HTMLElement>(null);
+  const copyRef = useRef<HTMLDivElement>(null);
+  const panelParallaxRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const root = rootRef.current;
+      const copy = copyRef.current;
+      const panel = panelParallaxRef.current;
+      if (!root || !copy || !panel) return;
+
+      // matchMedia scopes the effect to motion-allowed users (and auto-reverts
+      // on teardown / when the query stops matching — no manual cleanup, no
+      // hydration branch in the JSX). The parallax is cheap enough (transform +
+      // opacity, scrub) to run at every width, so no min-width gate here.
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Copy column: recedes AHEAD of native scroll and fades out. A scrubbed
+        // timeline lets the y-drift span the whole hero-exit range while the
+        // opacity finishes earlier (~80% of the range) — so the copy is fully
+        // transparent by the time it has cleared the top of the viewport, not
+        // lingering faintly visible or bleeding the fade past the hero.
+        gsap
+          .timeline({
+            defaults: { ease: "none" },
+            scrollTrigger: {
+              trigger: root,
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            },
+          })
+          .to(copy, { yPercent: -35, duration: 1 }, 0)
+          .to(copy, { opacity: 0, duration: 0.8 }, 0);
+
+        // Prism panel: drifts up more slowly than the copy and scales down a
+        // touch, so it appears to recede into the distance behind the copy.
+        gsap.to(panel, {
+          yPercent: -12,
+          scale: 0.92,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      });
+    },
+    { scope: rootRef },
+  );
 
   // ---- Entrance (staggered on load; transform-only so it's never invisible) --
   const container: Variants = {
@@ -85,7 +161,7 @@ export function Hero() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-navy text-white">
+    <section ref={rootRef} className="relative overflow-hidden bg-navy text-white">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -right-32 -top-24 h-96 w-96 rounded-full bg-accent/20 blur-3xl"
@@ -96,7 +172,8 @@ export function Hero() {
       />
 
       <div className="container relative grid items-center gap-12 py-20 lg:grid-cols-2 lg:py-28">
-        {/* ---- Copy column (staggered entrance) ---- */}
+        {/* ---- Copy column (GSAP scroll-exit wrapper → Framer entrance) ---- */}
+        <div ref={copyRef}>
         <motion.div variants={container} initial="hidden" animate="show">
           <motion.p
             variants={item}
@@ -144,8 +221,11 @@ export function Hero() {
             </Magnetic>
           </motion.div>
         </motion.div>
+        </div>
 
-        {/* ---- Prism panel (entrance + idle float + pointer tilt + WebGL) ---- */}
+        {/* ---- Prism panel (GSAP scroll-exit wrapper → Framer entrance + idle
+            float + pointer tilt + WebGL) ---- */}
+        <div ref={panelParallaxRef}>
         <motion.div
           variants={panelEntrance}
           initial="hidden"
@@ -195,6 +275,7 @@ export function Hero() {
             </motion.div>
           </motion.div>
         </motion.div>
+        </div>
       </div>
     </section>
   );
