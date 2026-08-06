@@ -16,10 +16,15 @@ interface StatCounterProps {
 export function StatCounter({ value, suffix = "", label }: StatCounterProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  const [display, setDisplay] = useState(0);
+  const hasAnimated = useRef(false);
+  // Default to the real value so the stat is never stuck at 0 — this is what
+  // shows on the server render, without JS, or if the in-view observer never
+  // fires. The count-up (below) only overrides it once the section scrolls in.
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || hasAnimated.current) return;
+    hasAnimated.current = true;
 
     const prefersReduced =
       typeof window !== "undefined" &&
@@ -30,6 +35,7 @@ export function StatCounter({ value, suffix = "", label }: StatCounterProps) {
       return;
     }
 
+    setDisplay(0);
     const controls = animate(0, value, {
       duration: 1.6,
       ease: "easeOut",

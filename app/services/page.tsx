@@ -13,11 +13,11 @@ import { services, caseStudies, skills, faqs, values } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Explore HML Prism's services: web & mobile advertising, display advertising and custom web platforms — plus our work, approach, skills and FAQs.",
+    "Explore HML Prism's services: web & mobile advertising, display advertising and website development — plus our work, approach, skills and FAQs.",
   openGraph: {
     title: "Services | HML Prism",
     description:
-      "Web & mobile advertising, display advertising and custom web platforms from HML Prism.",
+      "Web & mobile advertising, display advertising and website development from HML Prism.",
   },
 };
 
@@ -27,7 +27,7 @@ export default function ServicesPage() {
       <PageHero
         eyebrow="Services"
         title="Everything you need to grow online"
-        description="From paid media to lifecycle messaging, we deliver end-to-end marketing that moves the metrics that matter."
+        description="From paid media to custom-built websites, we deliver end-to-end work that moves the metrics that matter."
       />
 
       {/* -------------------------------------------------- Intro + value props */}
@@ -78,7 +78,7 @@ export default function ServicesPage() {
             title="Core services"
             description="Each service stands on its own — and works even harder when combined."
           />
-          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service, i) => (
               <Reveal key={service.slug} delay={i * 0.1}>
                 <ServiceCard

@@ -33,8 +33,9 @@ export default function HomePage() {
               <span className="text-accent">measurable growth</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-navy-100">
-              HML Prism runs data-driven web, mobile and messaging campaigns that
-              turn attention into revenue — with sharp creative and radically
+              HML Prism runs data-driven advertising campaigns and builds the
+              custom websites they point to — turning attention into revenue with
+              sharp creative and radically
               transparent reporting.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
@@ -95,7 +96,7 @@ export default function HomePage() {
               align="left"
               eyebrow="Who we are"
               title="A growth partner, not just another agency"
-              description="We blend performance media, lifecycle messaging and standout creative into one accountable system. Every decision is backed by data, and every result is something you can see."
+              description="We blend performance media, custom website builds and standout creative into one accountable system. Every decision is backed by data, and every result is something you can see."
             />
             <ul className="mt-6 space-y-3">
               {[
@@ -125,9 +126,9 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="What we do"
             title="Services built to grow your business"
-            description="Core capabilities that work together to reach your audience wherever they are."
+            description="From paid campaigns to the websites they point to — capabilities that work together to grow your business online."
           />
-          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service, i) => (
               <Reveal key={service.slug} delay={i * 0.1}>
                 <ServiceCard

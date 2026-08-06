@@ -34,8 +34,8 @@ export default function AboutPage() {
           <Reveal from="right">
             <div className="overflow-hidden rounded-3xl shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1100&q=80"
-                alt="HML Prism team members working together in the office"
+                src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1100&q=80"
+                alt="HML Prism team collaborating on a marketing strategy session"
                 width={1100}
                 height={825}
                 className="h-full w-full object-cover"

@@ -8,7 +8,7 @@ export const site = {
   name: "HML Prism",
   tagline: "Advertising that refracts your brand into measurable growth.",
   description:
-    "HML Prism is a digital marketing and advertising agency helping brands grow through web & mobile advertising, high-impact display campaigns, and custom web platforms.",
+    "HML Prism is a digital marketing and advertising agency helping brands grow through web & mobile advertising, high-impact display campaigns, and custom website development.",
   url: "https://hmlprism.example.com",
   email: "hmlprism@gmail.com",
 } as const;
@@ -20,6 +20,23 @@ export const nav: { label: string; href: string }[] = [
   { label: "Contact", href: "/contact" },
 ];
 
+/**
+ * `services` are the concrete, purchasable packages shown as cards on Home,
+ * Services and in the Footer. Keep this list in sync with any prose that
+ * enumerates what we offer — the FAQ answer below, `site.description` above,
+ * and the Services/About page `metadata.description` strings.
+ *
+ * Note the deliberate distinction from `capabilities` (further down): those are
+ * the four broader internal disciplines we lead with on the About page
+ * (Graphics Design, App Development, Digital Marketing, Brand Development).
+ * We intentionally do NOT force a 1:1 mapping between the two — capabilities
+ * describe the craft we bring to every engagement, while services are the
+ * specific things a visitor can buy. Digital Marketing covers the two
+ * advertising services; App Development covers Website Development; Graphics
+ * Design and Brand Development are cross-cutting craft applied within those
+ * engagements rather than standalone SKUs. The rule we hold to: no page copy
+ * may name a service that has no card here.
+ */
 export const services: {
   title: string;
   slug: string;
@@ -42,6 +59,14 @@ export const services: {
       "Eye-catching programmatic and native display creative that builds awareness and keeps your brand top of mind.",
     points: ["Programmatic buying", "Native & banner creative", "Brand-safe placements"],
     icon: "layout",
+  },
+  {
+    title: "Website Development",
+    slug: "website-development",
+    blurb:
+      "Custom websites and web apps designed and built to perform — from data-driven platforms to content-rich hubs that turn visitors into customers.",
+    points: ["Custom web app design", "Responsive development", "Ongoing maintenance & support"],
+    icon: "code",
   },
 ];
 
@@ -105,7 +130,7 @@ export const faqs: { question: string; answer: string }[] = [
   {
     question: "What services does HML Prism offer?",
     answer:
-      "We provide web & mobile advertising, display advertising and custom web platforms — plus strategy, creative and analytics to tie every campaign together.",
+      "We provide web & mobile advertising, display advertising and website development — plus the strategy, creative and analytics that tie every campaign and build together.",
   },
   {
     question: "How does your process work?",
