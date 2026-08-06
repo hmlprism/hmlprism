@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Hero } from "@/components/Hero";
+import { HowItWorks } from "@/components/HowItWorks";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ServiceCard } from "@/components/ServiceCard";
 import { CaseStudyCard } from "@/components/CaseStudyCard";
@@ -10,7 +11,7 @@ import { Stagger, StaggerItem } from "@/components/Stagger";
 import { Card } from "@/components/Card";
 import { Icon, type IconName } from "@/components/Icon";
 import { ContactForm } from "@/components/ContactForm";
-import { services, caseStudies, stats, steps, values } from "@/lib/site";
+import { services, caseStudies, stats, values } from "@/lib/site";
 
 export default function HomePage() {
   return (
@@ -130,30 +131,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------------------------------------------------------- How it works */}
-      <section className="section">
-        <div className="container">
-          <SectionHeading
-            eyebrow="How it works"
-            title="Three steps to launch"
-            description="A simple, transparent path from first conversation to live campaigns."
-          />
-          <Stagger className="mt-12 grid gap-6 md:grid-cols-3">
-            {steps.map((step, i) => (
-              <StaggerItem key={step.title} className="h-full">
-                <Card className="h-full">
-                  <span className="mb-4 grid h-11 w-11 place-items-center rounded-full bg-navy text-lg font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <h3 className="text-lg font-bold text-navy">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                    {step.description}
-                  </p>
-                </Card>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
+      <HowItWorks />
 
       {/* -------------------------------------------------------- Why choose us */}
       <section className="section bg-slate-50">
