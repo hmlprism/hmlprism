@@ -3,20 +3,21 @@ import Image from "next/image";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ServiceCard } from "@/components/ServiceCard";
+import { CaseStudyCard } from "@/components/CaseStudyCard";
 import { ProgressBar } from "@/components/ProgressBar";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { Reveal } from "@/components/Reveal";
 import { Icon, type IconName } from "@/components/Icon";
-import { services, skills, faqs, values } from "@/lib/site";
+import { services, caseStudies, skills, faqs, values } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Explore HML Prism's services: web & mobile advertising, SMS & email marketing, and display advertising — plus our approach, skills and FAQs.",
+    "Explore HML Prism's services: web & mobile advertising, display advertising and custom web platforms — plus our work, approach, skills and FAQs.",
   openGraph: {
     title: "Services | HML Prism",
     description:
-      "Web & mobile advertising, SMS & email marketing, and display advertising from HML Prism.",
+      "Web & mobile advertising, display advertising and custom web platforms from HML Prism.",
   },
 };
 
@@ -77,7 +78,7 @@ export default function ServicesPage() {
             title="Core services"
             description="Each service stands on its own — and works even harder when combined."
           />
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
             {services.map((service, i) => (
               <Reveal key={service.slug} delay={i * 0.1}>
                 <ServiceCard
@@ -85,6 +86,32 @@ export default function ServicesPage() {
                   blurb={service.blurb}
                   points={service.points}
                   icon={service.icon as IconName}
+                />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------ Case studies */}
+      <section className="section">
+        <div className="container">
+          <SectionHeading
+            eyebrow="Our work"
+            title="Case studies"
+            description="A look at platforms we've designed and built end to end — real products, live in the wild."
+          />
+          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+            {caseStudies.map((study, i) => (
+              <Reveal key={study.url} delay={i * 0.1}>
+                <CaseStudyCard
+                  name={study.name}
+                  url={study.url}
+                  domain={study.domain}
+                  category={study.category}
+                  blurb={study.blurb}
+                  tags={study.tags}
+                  icon={study.icon as IconName}
                 />
               </Reveal>
             ))}

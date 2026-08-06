@@ -1,7 +1,7 @@
 # HML Prism — Marketing Website
 
 Marketing site for **HML Prism**, a digital marketing & advertising agency
-(web & mobile advertising, SMS & email marketing, display advertising).
+(web & mobile advertising, display advertising, custom web platforms).
 
 Built with **Next.js 14 (App Router)**, **TypeScript**, **Tailwind CSS**, and
 **Framer Motion**.

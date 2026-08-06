@@ -10,7 +10,12 @@
       "Bash(curl -s http://localhost:3000/logo.svg)",
       "mcp__chrome-devtools__new_page",
       "mcp__chrome-devtools__resize_page",
-      "mcp__chrome-devtools__take_screenshot"
+      "mcp__chrome-devtools__take_screenshot",
+      "WebFetch(domain:brasileiraototal.com)",
+      "WebFetch(domain:precosbrasil.com)",
+      "Bash(npx tsc *)",
+      "Read(//tmp/**)",
+      "Bash(pkill -f \"next dev\")"
     ]
   }
 }

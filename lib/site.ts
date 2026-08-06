@@ -8,7 +8,7 @@ export const site = {
   name: "HML Prism",
   tagline: "Advertising that refracts your brand into measurable growth.",
   description:
-    "HML Prism is a digital marketing and advertising agency helping brands grow through web & mobile advertising, SMS & email marketing, and high-impact display campaigns.",
+    "HML Prism is a digital marketing and advertising agency helping brands grow through web & mobile advertising, high-impact display campaigns, and custom web platforms.",
   url: "https://hmlprism.example.com",
   email: "hmlprism@gmail.com",
 } as const;
@@ -44,20 +44,43 @@ export const services: {
     icon: "monitor",
   },
   {
-    title: "SMS & Email Marketing",
-    slug: "sms-email-marketing",
-    blurb:
-      "Lifecycle messaging that turns subscribers into buyers — segmented, automated and continuously optimized for conversions.",
-    points: ["Automated journeys", "Audience segmentation", "A/B tested sends"],
-    icon: "mail",
-  },
-  {
     title: "Display Advertising",
     slug: "display-advertising",
     blurb:
       "Eye-catching programmatic and native display creative that builds awareness and keeps your brand top of mind.",
     points: ["Programmatic buying", "Native & banner creative", "Brand-safe placements"],
     icon: "layout",
+  },
+];
+
+export const caseStudies: {
+  name: string;
+  url: string;
+  domain: string;
+  category: string;
+  blurb: string;
+  tags: string[];
+  icon: string;
+}[] = [
+  {
+    name: "Preços Brasil",
+    url: "https://precosbrasil.com",
+    domain: "precosbrasil.com",
+    category: "Data & Analytics",
+    blurb:
+      "A cost-of-living platform that turns official IBGE and Central Bank data into clear, searchable pricing across 127+ everyday items — with regional filters, historical trends and multi-currency views.",
+    tags: ["Web app", "Data visualization", "SEO"],
+    icon: "chart",
+  },
+  {
+    name: "Brasileirão Total",
+    url: "https://brasileiraototal.com",
+    domain: "brasileiraototal.com",
+    category: "Sports Media",
+    blurb:
+      "A real-time hub for Brazilian and South American football — live news, league tables, fixtures and dedicated club pages, all in one fast, centralized experience fans keep coming back to.",
+    tags: ["Content platform", "Live data", "SEO"],
+    icon: "spark",
   },
 ];
 
@@ -90,7 +113,7 @@ export const faqs: { question: string; answer: string }[] = [
   {
     question: "What services does HML Prism offer?",
     answer:
-      "We provide web & mobile advertising, SMS & email marketing, and display advertising — plus strategy, creative and analytics to tie every campaign together.",
+      "We provide web & mobile advertising, display advertising and custom web platforms — plus strategy, creative and analytics to tie every campaign together.",
   },
   {
     question: "How does your process work?",

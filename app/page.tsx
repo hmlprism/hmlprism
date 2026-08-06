@@ -2,12 +2,13 @@ import Image from "next/image";
 import { Button } from "@/components/Button";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ServiceCard } from "@/components/ServiceCard";
+import { CaseStudyCard } from "@/components/CaseStudyCard";
 import { StatCounter } from "@/components/StatCounter";
 import { Reveal } from "@/components/Reveal";
 import { Card } from "@/components/Card";
 import { Icon, type IconName } from "@/components/Icon";
 import { ContactForm } from "@/components/ContactForm";
-import { services, stats, steps, values } from "@/lib/site";
+import { services, caseStudies, stats, steps, values } from "@/lib/site";
 
 export default function HomePage() {
   return (
@@ -124,9 +125,9 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="What we do"
             title="Services built to grow your business"
-            description="Three core capabilities that work together to reach your audience wherever they are."
+            description="Core capabilities that work together to reach your audience wherever they are."
           />
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
             {services.map((service, i) => (
               <Reveal key={service.slug} delay={i * 0.1}>
                 <ServiceCard
@@ -134,6 +135,32 @@ export default function HomePage() {
                   blurb={service.blurb}
                   points={service.points}
                   icon={service.icon as IconName}
+                />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------------- Case studies */}
+      <section className="section">
+        <div className="container">
+          <SectionHeading
+            eyebrow="Our work"
+            title="Case studies"
+            description="Real platforms we've designed and built — from data-driven web apps to high-traffic content hubs."
+          />
+          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+            {caseStudies.map((study, i) => (
+              <Reveal key={study.url} delay={i * 0.1}>
+                <CaseStudyCard
+                  name={study.name}
+                  url={study.url}
+                  domain={study.domain}
+                  category={study.category}
+                  blurb={study.blurb}
+                  tags={study.tags}
+                  icon={study.icon as IconName}
                 />
               </Reveal>
             ))}

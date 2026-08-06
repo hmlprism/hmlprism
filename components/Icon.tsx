@@ -14,6 +14,7 @@ export type IconName =
   | "chart"
   | "check"
   | "arrow-right"
+  | "external"
   | "menu"
   | "close"
   | "phone"
@@ -69,6 +70,12 @@ const paths: Record<IconName, JSX.Element> = {
   ),
   check: <path d="m5 12 5 5L20 7" />,
   "arrow-right": <path d="M5 12h14M13 6l6 6-6 6" />,
+  external: (
+    <>
+      <path d="M14 4h6v6M20 4l-9 9" />
+      <path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4" />
+    </>
+  ),
   menu: <path d="M4 6h16M4 12h16M4 18h16" />,
   close: <path d="M6 6l12 12M18 6 6 18" />,
   phone: (

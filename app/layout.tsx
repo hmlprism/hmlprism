@@ -24,9 +24,9 @@ export const metadata: Metadata = {
     "advertising agency",
     "web advertising",
     "mobile advertising",
-    "SMS marketing",
-    "email marketing",
     "display advertising",
+    "web development",
+    "web platforms",
   ],
   openGraph: {
     type: "website",
