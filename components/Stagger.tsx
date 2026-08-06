@@ -73,12 +73,15 @@ export function StaggerItem({ children, className, as = "div" }: StaggerItemProp
   const reduced = useReducedMotion();
   const Comp = motion[as];
 
-  const item: Variants = reduced
-    ? { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.2 } } }
-    : {
-        hidden: { opacity: 0, y: 24 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
-      };
+  // Transform-only reveal (no opacity): the server-rendered markup stays visible
+  // even if client JS never runs, so content is never stuck invisible — it just
+  // sits a few px offset until the scroll-triggered slide plays. `show` always
+  // resets to 0 (even for reduced motion) to correct the server-baked offset,
+  // since the server can't detect reduced-motion.
+  const item: Variants = {
+    hidden: { y: reduced ? 0 : 24 },
+    show: { y: 0, transition: reduced ? { duration: 0 } : { duration: 0.4, ease: EASE } },
+  };
 
   return (
     <Comp className={className} variants={item}>

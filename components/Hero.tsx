@@ -20,13 +20,20 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 /**
  * Home hero with a staggered load entrance, magnetic CTA buttons and a prism
  * panel that idle-floats and tilts toward the cursor, layered over a contained
- * WebGL gradient accent. All continuous/pointer motion is disabled for
- * reduced-motion users; the entrance degrades to a plain fade.
+ * WebGL gradient accent. Continuous/pointer motion is disabled for
+ * reduced-motion users.
+ *
+ * SSR-safety (fixes a production regression where the hero shipped invisible):
+ * this is above-the-fold, so it must NEVER depend on JS to become visible. The
+ * entrance therefore animates ONLY transforms (a small slide) and never
+ * `opacity` — the hidden variant keeps `opacity: 1`, so the server-rendered
+ * markup is fully visible (just offset a few px). If hydration is delayed or
+ * fails entirely, the hero stays readable instead of stuck at `opacity: 0`.
  */
 export function Hero() {
   const reduced = useReducedMotion();
 
-  // ---- Entrance (staggered on load) ---------------------------------------
+  // ---- Entrance (staggered on load; transform-only so it's never invisible) --
   const container: Variants = {
     hidden: {},
     show: {
@@ -36,15 +43,23 @@ export function Hero() {
       },
     },
   };
-  const item: Variants = reduced
-    ? { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.2 } } }
-    : {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
-      };
+  // `show` always resets the transform to 0 (even for reduced motion) so it
+  // corrects the offset the server baked in — the server can't detect
+  // reduced-motion, so it always renders the non-reduced offset.
+  const item: Variants = {
+    hidden: { y: reduced ? 0 : 20 },
+    show: { y: 0, transition: reduced ? { duration: 0 } : { duration: 0.5, ease: EASE } },
+  };
   const lineGroup: Variants = {
     hidden: {},
     show: { transition: { staggerChildren: reduced ? 0 : 0.1 } },
+  };
+  const panelEntrance: Variants = {
+    hidden: { x: reduced ? 0 : 40 },
+    show: {
+      x: 0,
+      transition: reduced ? { duration: 0 } : { duration: 0.6, delay: 0.25, ease: EASE },
+    },
   };
 
   // ---- Prism panel pointer tilt -------------------------------------------
@@ -132,9 +147,9 @@ export function Hero() {
 
         {/* ---- Prism panel (entrance + idle float + pointer tilt + WebGL) ---- */}
         <motion.div
-          initial={{ opacity: 0, x: reduced ? 0 : 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: reduced ? 0 : 0.25, ease: EASE }}
+          variants={panelEntrance}
+          initial="hidden"
+          animate="show"
           className="relative mx-auto max-w-md"
         >
           <div

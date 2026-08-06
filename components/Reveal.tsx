@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 
 interface RevealProps {
@@ -22,7 +22,12 @@ const offsets: Record<NonNullable<RevealProps["from"]>, { x: number; y: number }
 
 /**
  * Subtle scroll-reveal wrapper. Animates once when the element enters the
- * viewport and respects users' reduced-motion preferences via Framer Motion.
+ * viewport.
+ *
+ * SSR-safety: the reveal animates ONLY transforms (a small slide), never
+ * `opacity`. The server-rendered markup is therefore fully visible (just offset
+ * a few px), so content is never stuck invisible if client JS is delayed or
+ * fails. Reduced-motion users get no movement at all.
  */
 export function Reveal({
   children,
@@ -32,13 +37,14 @@ export function Reveal({
   as = "div",
 }: RevealProps) {
   const MotionTag = motion[as];
-  const { x, y } = offsets[from];
+  const reduced = useReducedMotion();
+  const { x, y } = reduced ? { x: 0, y: 0 } : offsets[from];
 
   return (
     <MotionTag
       className={className}
-      initial={{ opacity: 0, x, y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      initial={{ x, y }}
+      whileInView={{ x: 0, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
     >
