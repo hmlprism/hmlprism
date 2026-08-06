@@ -58,7 +58,8 @@ Defined in `tailwind.config.ts`:
   - Contact is email-only (no phone/office). To add them back, restore the
     fields in `lib/site.ts` and the `details` list in `app/contact/page.tsx`.
 - **Navigation, services, stats, steps, FAQs, values, skills**: `lib/site.ts`.
-- **Social links**: the `socials` array in `lib/site.ts`.
+- **Contact**: the footer shows a single mail icon linking to `site.email`
+  (`mailto:`). There are no social links.
 
 ## Adding your logo
 

@@ -18,12 +18,7 @@ export type IconName =
   | "menu"
   | "close"
   | "phone"
-  | "map-pin"
-  | "facebook"
-  | "instagram"
-  | "twitter"
-  | "youtube"
-  | "linkedin";
+  | "map-pin";
 
 const paths: Record<IconName, JSX.Element> = {
   monitor: (
@@ -85,31 +80,6 @@ const paths: Record<IconName, JSX.Element> = {
     <>
       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
       <circle cx="12" cy="10" r="3" />
-    </>
-  ),
-  facebook: (
-    <path d="M14 8.5V7c0-.8.7-1 1-1h2V3h-3a4 4 0 0 0-4 4v1.5H8V12h2v9h4v-9h2.5l.5-3.5H14Z" />
-  ),
-  instagram: (
-    <>
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="0.75" fill="currentColor" stroke="none" />
-    </>
-  ),
-  twitter: (
-    <path d="M4 3h4l5 7 5-7h2l-6.3 8.7L21 21h-4l-5.3-7.3L6 21H4l6.6-9.1L4 3Z" />
-  ),
-  youtube: (
-    <>
-      <rect x="2" y="5" width="20" height="14" rx="4" />
-      <path d="m10 9 5 3-5 3V9Z" fill="currentColor" stroke="none" />
-    </>
-  ),
-  linkedin: (
-    <>
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-      <path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 17v-7" />
     </>
   ),
 };

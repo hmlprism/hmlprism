@@ -20,14 +20,6 @@ export const nav: { label: string; href: string }[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-export const socials: { label: string; href: string; icon: string }[] = [
-  { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
-  { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
-  { label: "Twitter / X", href: "https://twitter.com", icon: "twitter" },
-  { label: "YouTube", href: "https://youtube.com", icon: "youtube" },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
-];
-
 export const services: {
   title: string;
   slug: string;

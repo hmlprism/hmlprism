@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { Icon, type IconName } from "./Icon";
-import { services, site, socials, currentYear } from "@/lib/site";
+import { Icon } from "./Icon";
+import { services, site, currentYear } from "@/lib/site";
 
 const supportLinks = [
   { label: "Contact", href: "/contact" },
@@ -15,7 +15,7 @@ const companyLinks = [
   { label: "Privacy Policy", href: "/privacy" },
 ];
 
-/** Site footer with brand blurb, link columns, socials and copyright. */
+/** Site footer with brand blurb, link columns, email contact and copyright. */
 export function Footer() {
   return (
     <footer className="bg-navy-900 text-navy-100">
@@ -93,21 +93,13 @@ export function Footer() {
           <p className="text-xs text-navy-100/70">
             © {currentYear} {site.name}. All rights reserved.
           </p>
-          <ul className="flex items-center gap-3">
-            {socials.map((s) => (
-              <li key={s.label}>
-                <a
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-accent hover:text-navy-900"
-                >
-                  <Icon name={s.icon as IconName} size={18} />
-                </a>
-              </li>
-            ))}
-          </ul>
+          <a
+            href={`mailto:${site.email}`}
+            aria-label={`Email ${site.name}`}
+            className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-accent hover:text-navy-900"
+          >
+            <Icon name="mail" size={18} />
+          </a>
         </div>
       </div>
     </footer>
