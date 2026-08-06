@@ -1,10 +1,12 @@
 import Image from "next/image";
 import { Button } from "@/components/Button";
+import { Hero } from "@/components/Hero";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ServiceCard } from "@/components/ServiceCard";
 import { CaseStudyCard } from "@/components/CaseStudyCard";
 import { StatCounter } from "@/components/StatCounter";
 import { Reveal } from "@/components/Reveal";
+import { Stagger, StaggerItem } from "@/components/Stagger";
 import { Card } from "@/components/Card";
 import { Icon, type IconName } from "@/components/Icon";
 import { ContactForm } from "@/components/ContactForm";
@@ -14,68 +16,7 @@ export default function HomePage() {
   return (
     <>
       {/* ---------------------------------------------------------------- Hero */}
-      <section className="relative overflow-hidden bg-navy text-white">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-32 -top-24 h-96 w-96 rounded-full bg-accent/20 blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-accent/10 blur-3xl"
-        />
-        <div className="container relative grid items-center gap-12 py-20 lg:grid-cols-2 lg:py-28">
-          <Reveal>
-            <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-accent">
-              Digital Marketing & Advertising
-            </p>
-            <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Refract your brand into{" "}
-              <span className="text-accent">measurable growth</span>
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-navy-100">
-              HML Prism runs data-driven advertising campaigns and builds the
-              custom websites they point to — turning attention into revenue with
-              sharp creative and radically
-              transparent reporting.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Button href="/contact" variant="accent" size="lg">
-                Get Started
-                <Icon name="arrow-right" size={18} />
-              </Button>
-              <Button
-                href="/contact"
-                size="lg"
-                className="border border-white/30 text-white hover:border-accent hover:text-accent"
-              >
-                Free Consultation
-              </Button>
-            </div>
-          </Reveal>
-
-          <Reveal from="left" delay={0.15}>
-            <div className="relative mx-auto max-w-md">
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 -z-10 rounded-[2.5rem] bg-accent/20 blur-3xl"
-              />
-              <div className="flex flex-col items-center gap-6 rounded-[2.5rem] border border-white/10 bg-white/5 p-10 shadow-2xl backdrop-blur-sm sm:p-14">
-                <Image
-                  src="/logo.svg"
-                  alt="HML Prism logo — a prism refracting light into a full spectrum"
-                  width={320}
-                  height={320}
-                  className="h-auto w-56 drop-shadow-[0_12px_40px_rgba(46,196,182,0.35)] sm:w-64"
-                  priority
-                />
-                <p className="text-center text-2xl font-bold tracking-tight text-white">
-                  HML <span className="text-accent">Prism</span>
-                </p>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <Hero />
 
       {/* --------------------------------------------------------- Who we are */}
       <section className="section">
@@ -98,18 +39,22 @@ export default function HomePage() {
               title="A growth partner, not just another agency"
               description="We blend performance media, custom website builds and standout creative into one accountable system. Every decision is backed by data, and every result is something you can see."
             />
-            <ul className="mt-6 space-y-3">
+            <Stagger as="ul" className="mt-6 space-y-3">
               {[
                 "Full-funnel strategy across every paid channel",
                 "Creative that stops the scroll and drives clicks",
                 "Real-time dashboards and honest reporting",
               ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-navy">
+                <StaggerItem
+                  as="li"
+                  key={item}
+                  className="flex items-start gap-3 text-navy"
+                >
                   <Icon name="check" size={20} className="mt-0.5 shrink-0 text-accent" />
                   <span>{item}</span>
-                </li>
+                </StaggerItem>
               ))}
-            </ul>
+            </Stagger>
             <div className="mt-8">
               <Button href="/about" variant="outline">
                 Learn more about us
@@ -128,18 +73,18 @@ export default function HomePage() {
             title="Services built to grow your business"
             description="From paid campaigns to the websites they point to — capabilities that work together to grow your business online."
           />
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, i) => (
-              <Reveal key={service.slug} delay={i * 0.1}>
+          <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service) => (
+              <StaggerItem key={service.slug} className="h-full">
                 <ServiceCard
                   title={service.title}
                   blurb={service.blurb}
                   points={service.points}
                   icon={service.icon as IconName}
                 />
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -151,9 +96,9 @@ export default function HomePage() {
             title="Case studies"
             description="Real platforms we've designed and built — from data-driven web apps to high-traffic content hubs."
           />
-          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
-            {caseStudies.map((study, i) => (
-              <Reveal key={study.url} delay={i * 0.1}>
+          <Stagger className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+            {caseStudies.map((study) => (
+              <StaggerItem key={study.url} className="h-full">
                 <CaseStudyCard
                   name={study.name}
                   url={study.url}
@@ -163,24 +108,25 @@ export default function HomePage() {
                   tags={study.tags}
                   icon={study.icon as IconName}
                 />
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
       {/* --------------------------------------------------------------- Stats */}
       <section className="bg-navy py-16 sm:py-20">
-        <div className="container grid grid-cols-2 gap-8 lg:grid-cols-4">
+        <Stagger className="container grid grid-cols-2 gap-8 lg:grid-cols-4" stagger={0.1}>
           {stats.map((stat) => (
-            <StatCounter
-              key={stat.label}
-              value={stat.value}
-              suffix={stat.suffix}
-              label={stat.label}
-            />
+            <StaggerItem key={stat.label}>
+              <StatCounter
+                value={stat.value}
+                suffix={stat.suffix}
+                label={stat.label}
+              />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
       {/* ---------------------------------------------------------- How it works */}
@@ -191,9 +137,9 @@ export default function HomePage() {
             title="Three steps to launch"
             description="A simple, transparent path from first conversation to live campaigns."
           />
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <Stagger className="mt-12 grid gap-6 md:grid-cols-3">
             {steps.map((step, i) => (
-              <Reveal key={step.title} delay={i * 0.1}>
+              <StaggerItem key={step.title} className="h-full">
                 <Card className="h-full">
                   <span className="mb-4 grid h-11 w-11 place-items-center rounded-full bg-navy text-lg font-bold text-white">
                     {i + 1}
@@ -203,9 +149,9 @@ export default function HomePage() {
                     {step.description}
                   </p>
                 </Card>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -216,9 +162,9 @@ export default function HomePage() {
             eyebrow="Why choose us"
             title="Marketing you can measure and trust"
           />
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {values.slice(0, 3).map((value, i) => (
-              <Reveal key={value.title} delay={i * 0.1}>
+          <Stagger className="mt-12 grid gap-6 md:grid-cols-3">
+            {values.slice(0, 3).map((value) => (
+              <StaggerItem key={value.title} className="h-full">
                 <Card interactive className="h-full text-center">
                   <span className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-accent/10 text-accent-600">
                     <Icon name={value.icon as IconName} size={26} />
@@ -228,9 +174,9 @@ export default function HomePage() {
                     {value.description}
                   </p>
                 </Card>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -245,9 +191,11 @@ export default function HomePage() {
               description="Tell us where you want to grow. We'll reply within one business day with a plan to get there."
             />
           </div>
-          <Card className="lg:p-8">
-            <ContactForm />
-          </Card>
+          <Reveal from="left">
+            <Card className="lg:p-8">
+              <ContactForm />
+            </Card>
+          </Reveal>
         </div>
       </section>
     </>

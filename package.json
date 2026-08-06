@@ -13,6 +13,7 @@
     "country-codes-list": "^3.1.1",
     "framer-motion": "^11.3.0",
     "next": "^14.2.35",
+    "ogl": "^1.0.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-select": "^5.10.2"

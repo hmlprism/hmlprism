@@ -25,7 +25,7 @@ export function CaseStudyCard({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-lg"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/50 hover:shadow-xl"
     >
       {/* Faux browser chrome */}
       <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50 px-4 py-3">
@@ -69,7 +69,7 @@ export function CaseStudyCard({
           <Icon
             name="external"
             size={16}
-            className="transition-transform group-hover:translate-x-0.5"
+            className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5"
           />
         </span>
       </div>
