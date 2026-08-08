@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
 
@@ -96,12 +96,33 @@ const ACCENT: [number, number, number] = [46 / 255, 196 / 255, 182 / 255];
 const FALLBACK_GRADIENT =
   "radial-gradient(120% 90% at 30% 25%, rgba(46,196,182,0.38), rgba(13,47,74,0) 60%), linear-gradient(140deg, rgba(46,196,182,0.18), rgba(13,47,74,0))";
 
+// The mode in which the continuous PinnedPrism visual owns the hero region and
+// is the page's single WebGL context. When this matches, this hero-panel canvas
+// must NOT initialize a second context.
+const PINNED_QUERY = "(min-width: 1024px) and (prefers-reduced-motion: no-preference)";
+
 export function PrismWebGL({ className }: PrismWebGLProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
+  // Track whether the pinned visual is active. SSR-safe: starts `false` so the
+  // server-rendered markup (a plain gradient div, no canvas) matches the first
+  // client render; the value only affects the effect below, never the rendered
+  // DOM, so there is no hydration flip. Re-initializes on crossing the boundary.
+  const [pinnedActive, setPinnedActive] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia(PINNED_QUERY);
+    const update = () => setPinnedActive(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
   useEffect(() => {
     if (reduced) return;
+    // Desktop + motion: PinnedPrism is the single context — leave the static
+    // gradient (which is hidden behind the pinned visual anyway) and init nothing.
+    if (pinnedActive) return;
     const container = containerRef.current;
     if (!container) return;
 
@@ -201,7 +222,7 @@ export function PrismWebGL({ className }: PrismWebGLProps) {
       resizeObserver?.disconnect();
       gl?.getExtension("WEBGL_lose_context")?.loseContext();
     }
-  }, [reduced]);
+  }, [reduced, pinnedActive]);
 
   // The static brand gradient is ALWAYS the base layer, applied via inline style
   // so it renders identically on the server and client (no hydration flip). When

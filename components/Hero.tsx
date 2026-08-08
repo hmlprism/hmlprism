@@ -72,12 +72,12 @@ export function Hero() {
       // hydration branch in the JSX). The parallax is cheap enough (transform +
       // opacity, scrub) to run at every width, so no min-width gate here.
       const mm = gsap.matchMedia();
+      // Copy column parallax runs at EVERY width (it's the left column, wholly
+      // independent of the pinned visual): recedes AHEAD of native scroll and
+      // fades out. A scrubbed timeline lets the y-drift span the whole hero-exit
+      // range while the opacity finishes earlier (~80%) — so the copy is fully
+      // transparent by the time it clears the top of the viewport.
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Copy column: recedes AHEAD of native scroll and fades out. A scrubbed
-        // timeline lets the y-drift span the whole hero-exit range while the
-        // opacity finishes earlier (~80% of the range) — so the copy is fully
-        // transparent by the time it has cleared the top of the viewport, not
-        // lingering faintly visible or bleeding the fade past the hero.
         gsap
           .timeline({
             defaults: { ease: "none" },
@@ -90,9 +90,15 @@ export function Hero() {
           })
           .to(copy, { yPercent: -35, duration: 1 }, 0)
           .to(copy, { opacity: 0, duration: 0.8 }, 0);
+      });
 
-        // Prism panel: drifts up more slowly than the copy and scales down a
-        // touch, so it appears to recede into the distance behind the copy.
+      // Prism panel parallax runs ONLY below 1024px. At >=1024px + motion the
+      // panel is hidden (`motion-safe:lg:hidden`) because the continuous
+      // PinnedPrism visual takes over that region — so animating it there would
+      // be pointless (and it must not compete with the pinned visual). Below the
+      // breakpoint the panel is the hero visual and drifts up + scales down a
+      // touch, receding behind the copy.
+      mm.add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
         gsap.to(panel, {
           yPercent: -12,
           scale: 0.92,
@@ -224,8 +230,12 @@ export function Hero() {
         </div>
 
         {/* ---- Prism panel (GSAP scroll-exit wrapper → Framer entrance + idle
-            float + pointer tilt + WebGL) ---- */}
-        <div ref={panelParallaxRef}>
+            float + pointer tilt + WebGL). Hidden at >=1024px + motion, where the
+            continuous PinnedPrism visual takes over this region (and its
+            PrismWebGL skips init in that mode, so only one WebGL context ever
+            exists). Still shown — and the sole hero visual — on tablet/mobile and
+            for reduced-motion users at any width. ---- */}
+        <div ref={panelParallaxRef} className="motion-safe:lg:hidden">
         <motion.div
           variants={panelEntrance}
           initial="hidden"

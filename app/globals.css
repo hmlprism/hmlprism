@@ -23,4 +23,24 @@
   .section {
     @apply py-16 sm:py-20 lg:py-24;
   }
+
+  /* Content wrapper for the four sections in the pinned-prism range (Hero,
+     Who-we-are, Services, Case Studies). Below the breakpoint — and for
+     reduced-motion users at any width — it behaves exactly like `.container`
+     (normal full-width layout). Only on desktop + motion-allowed does it shrink
+     to the left ~52% so the fixed pinned visual (right 42vw) never overlaps
+     content. Kept in sync (via the same media query) with the visual's own
+     `lg:block motion-reduce:lg:hidden` gate, so exactly one treatment is ever
+     active. */
+  .pinned-container {
+    @apply container;
+  }
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .pinned-container {
+      max-width: none;
+      margin-inline: 0;
+      padding-left: clamp(2rem, 6vw, 6rem);
+      padding-right: 46vw;
+    }
+  }
 }
