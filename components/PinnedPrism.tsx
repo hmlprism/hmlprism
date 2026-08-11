@@ -53,6 +53,12 @@ const fragment = /* glsl */ `
   uniform float uTime;
   uniform float uProgress;   // 0..1 across the whole pinned range
   uniform vec2  uResolution;
+  // Live contact anchors (even-metric space). These track the ACTUAL visible
+  // prism every frame: at the Hero beat they sit on the logo.svg prism (measured
+  // from the DOM), and interpolate onto the procedural pyramid's SDF face as the
+  // logo dissolves — so the beam always terminates ON the glass, never floating.
+  uniform vec2  uInHit;      // where the incoming beam meets the prism's left face
+  uniform vec2  uExit;       // where the outgoing beam(s) leave the prism base
   varying vec2 vUv;
 
   // Brand palette.
@@ -87,9 +93,6 @@ const fragment = /* glsl */ `
     // visually uniform in this tall portrait layer.
     vec2 m = vec2((vUv.x - 0.5) * aspect, vUv.y - 0.5);
 
-    // Gentle idle bob of the whole motif.
-    m.y -= 0.012 * sin(uTime * 0.6);
-
     float p = uProgress;
 
     // ---- State drivers -----------------------------------------------------
@@ -102,12 +105,17 @@ const fragment = /* glsl */ `
     vec2 apex  = vec2( 0.00,  0.30);
     vec2 baseL = vec2(-0.17,  0.09);
     vec2 baseR = vec2( 0.17,  0.09);
-    vec2 inFrom = vec2(-0.42, 0.24);     // incoming white beam origin (left)
-    vec2 inHit  = vec2(-0.055, 0.19);    // entry on the left face
-    vec2 E      = vec2( 0.00,  0.07);    // emergence point (base of pyramid)
-    vec2 F      = vec2( 0.00, -0.40);    // focal point (bottom)
+    vec2 inHit  = uInHit;                       // contact tracks the real prism
+    vec2 E      = uExit;                         // base tracks the real prism
+    vec2 inFrom = inHit + vec2(-0.34, 0.045);    // incoming beam origin (upper-left)
+    vec2 F      = vec2( 0.00, -0.40);            // focal point (bottom)
 
-    vec3 col = mix(NAVY * 0.85, NAVY9, smoothstep(0.0, 1.0, vUv.y));
+    // Transparent base: nothing is drawn where nothing belongs, so each page
+    // section's real background shows straight through the canvas (no panel box).
+    // Colour is accumulated additively; alpha (coverage) is the max reached by
+    // any element, so empty space stays fully transparent.
+    vec3 col = vec3(0.0);
+    float a  = 0.0;
 
     // Pyramid body. During the Hero beat the logo.svg overlay IS the visible
     // prism, so the procedural pyramid is hidden and only reveals as the logo
@@ -115,24 +123,38 @@ const fragment = /* glsl */ `
     float pyReveal = smoothstep(0.10, 0.28, p);
     float dTri = sdTriangle(m, apex, baseL, baseR);
     float fill = smoothstep(0.005, -0.005, dTri);
-    vec3 body = mix(NAVY * 1.35, NAVY9 * 1.1, smoothstep(0.09, 0.30, m.y));
-    col = mix(col, body, fill * 0.95 * pyReveal);
-    // Teal edge glow on the faces.
-    col += ACCENT * smoothstep(0.018, 0.0, abs(dTri)) * 0.55 * pyReveal;
+    // A translucent glass body: reads as a dark facet on light sections and a
+    // subtly lifted facet on the navy Hero — legible against either background.
+    vec3 body = mix(NAVY * 1.05, NAVY9, smoothstep(0.09, 0.30, m.y));
+    float bodyA = fill * 0.82 * pyReveal;
+    col = mix(col, body, bodyA);
+    a = max(a, bodyA);
+    // Teal edge glow on the faces (kept high-contrast so it pops on white too).
+    float edge = smoothstep(0.018, 0.0, abs(dTri)) * pyReveal;
+    col += ACCENT * edge * 1.05;
+    a = max(a, edge * 0.9);
+    // Inner refraction highlight near the core.
+    float inner = smoothstep(0.11, 0.0, length(m - vec2(0.0, 0.17))) * fill * pyReveal;
+    col += mix(ACCENT, vec3(1.0), 0.45) * inner * 0.5;
+    a = max(a, inner * 0.5);
 
     // Incoming white beam into the prism (fades once the story moves on).
-    float inVis = 1.0 - 0.55 * smoothstep(0.20, 0.55, p);
-    col += vec3(1.0) * smoothstep(0.012, 0.0, sdSeg(m, inFrom, inHit)) * 0.9 * inVis;
-    // Bright entry spark where it meets the face.
-    col += vec3(1.0) * smoothstep(0.05, 0.0, length(m - inHit)) * 0.6 * inVis;
+    float inVis = 1.0 - 0.5 * smoothstep(0.20, 0.55, p);
+    float seg   = smoothstep(0.012, 0.0, sdSeg(m, inFrom, inHit)) * inVis;
+    col += vec3(1.0) * seg;
+    a = max(a, seg);
+    // Bright entry spark exactly where it meets the face.
+    float spark = smoothstep(0.05, 0.0, length(m - inHit)) * inVis;
+    col += vec3(1.0) * spark * 0.85;
+    a = max(a, spark * 0.9);
 
     // Outgoing strands. Width sharpens toward focus; brightness lifts.
     float beamW = mix(0.020, 0.007, focus);
     float glow  = 1.0 + 1.1 * focus;
     vec3 cols[3];
-    cols[0] = vec3(1.00, 0.35, 0.45); // warm
-    cols[1] = vec3(0.42, 0.95, 0.55); // green
-    cols[2] = vec3(0.30, 0.66, 1.00); // blue
+    cols[0] = vec3(1.00, 0.30, 0.42); // warm
+    cols[1] = vec3(0.28, 0.92, 0.50); // green
+    cols[2] = vec3(0.24, 0.62, 1.00); // blue
     for (int i = 0; i < 3; i++) {
       float fi = float(i) - 1.0;                    // -1, 0, 1
       vec2 target = vec2(fi * 0.17 * spread, -0.42);
@@ -142,25 +164,50 @@ const fragment = /* glsl */ `
       // Subtle travelling shimmer along each strand.
       b *= 0.85 + 0.15 * sin(uTime * 2.0 + fi * 2.0 - m.y * 6.0);
       col += cols[i] * b * glow;
+      a = max(a, b * 0.95);
     }
 
     // Focal burst at the convergence point (Case Studies "result").
     float dF = length(m - F);
-    col += mix(ACCENT, vec3(1.0), 0.5) * smoothstep(0.16, 0.0, dF) * focus * 1.6;
+    float burst = smoothstep(0.16, 0.0, dF) * focus;
+    col += mix(ACCENT, vec3(1.0), 0.5) * burst * 1.6;
     col += vec3(1.0) * smoothstep(0.045, 0.0, dF) * focus;
+    a = max(a, burst);
 
-    // ---- Alpha: feather the panel edges so it melts into the sections ------
-    float aX   = smoothstep(0.0, 0.20, vUv.x);            // fade in from left
-    float aY   = smoothstep(0.0, 0.10, vUv.y) * smoothstep(1.0, 0.90, vUv.y);
-    float alpha = aX * aY * 0.97;
+    // ---- Alpha: feather only at the panel edges so beams that run off the
+    // layer fade out instead of hard-cutting; interior transparency is content
+    // driven, so there is no rectangular fill anywhere.
+    float aX = smoothstep(0.0, 0.12, vUv.x) * smoothstep(1.0, 0.90, vUv.x);
+    float aY = smoothstep(0.0, 0.06, vUv.y) * smoothstep(1.0, 0.94, vUv.y);
+    a *= aX * aY;
 
-    gl_FragColor = vec4(col, alpha);
+    gl_FragColor = vec4(col, clamp(a, 0.0, 1.0));
   }
 `;
 
-// Same static brand gradient PrismWebGL uses — base layer + no-WebGL fallback.
-const FALLBACK_GRADIENT =
-  "linear-gradient(180deg, #0a2438 0%, #061826 100%), radial-gradient(120% 60% at 50% 30%, rgba(46,196,182,0.28), rgba(13,47,74,0) 60%)";
+// Soft, transparent-EDGED fallback shown ONLY if WebGL init throws. It fades to
+// fully transparent before the panel edge, so even the fallback never draws a
+// hard-edged rectangle/seam against the page (unlike a solid fill would). When
+// WebGL succeeds the container stays fully transparent — the canvas is an
+// overlay over each section's real background, not a panel sitting on top of it.
+const SOFT_FALLBACK =
+  "radial-gradient(70% 55% at 50% 24%, rgba(46,196,182,0.20), rgba(13,47,74,0.10) 45%, rgba(13,47,74,0) 72%)";
+
+// Prism contact points as fractions of the logo.svg viewBox (512), used to place
+// the beam anchors on the drawn glass regardless of the logo's rendered size:
+//   incoming contact ≈ mid of the left face, exit ≈ the bottom-front vertex.
+const LOGO_CONTACT: [number, number] = [150 / 512, 150 / 512];
+const LOGO_EXIT: [number, number] = [202 / 512, 428 / 512];
+// The procedural pyramid's equivalents in even-metric space: a point on the
+// apex→baseL left face, and just under the base centre (matches the shader).
+const PROC_CONTACT: [number, number] = [-0.068, 0.216];
+const PROC_EXIT: [number, number] = [0.0, 0.075];
+
+// GLSL-matching smoothstep for the JS-side anchor interpolation.
+const smoothstep = (e0: number, e1: number, x: number) => {
+  const t = Math.min(Math.max((x - e0) / (e1 - e0), 0), 1);
+  return t * t * (3 - 2 * t);
+};
 
 export function PinnedPrism() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -201,6 +248,10 @@ export function PinnedPrism() {
           renderer = new Renderer({
             alpha: true,
             antialias: false,
+            // Straight (un-premultiplied) alpha so the shader's `vec4(col, a)`
+            // composites as a normal over-blend on top of the page: where a=0
+            // the section background shows through untouched (no panel box).
+            premultipliedAlpha: false,
             dpr: Math.min(window.devicePixelRatio || 1, 2), // cap DPR at 2
           });
           gl = renderer.gl;
@@ -220,15 +271,39 @@ export function PinnedPrism() {
               uTime: { value: 0 },
               uProgress: { value: 0 },
               uResolution: { value: [1, 1] },
+              uInHit: { value: PROC_CONTACT.slice() },
+              uExit: { value: PROC_EXIT.slice() },
             },
           });
           const mesh = new Mesh(gl, { geometry, program });
+
+          // Live contact anchors in even-metric space. Measured from the DOM so
+          // the incoming beam lands ON the logo prism during the Hero beat (the
+          // logo is a fixed-px overlay, so its position can only be known at
+          // runtime), then interpolate onto the procedural pyramid as it reveals.
+          let logoContactM: [number, number] = PROC_CONTACT.slice() as [number, number];
+          let logoExitM: [number, number] = PROC_EXIT.slice() as [number, number];
+          const measureLogo = (w: number, h: number) => {
+            const img = logo?.querySelector("img");
+            if (!img || w < 1 || h < 1) return;
+            const hb = host.getBoundingClientRect();
+            const ib = img.getBoundingClientRect();
+            const asp = w / h;
+            const toM = (fx: number, fy: number): [number, number] => {
+              const uvx = (ib.left - hb.left + fx * ib.width) / hb.width;
+              const uvyTop = (ib.top - hb.top + fy * ib.height) / hb.height;
+              return [(uvx - 0.5) * asp, 0.5 - uvyTop];
+            };
+            logoContactM = toM(LOGO_CONTACT[0], LOGO_CONTACT[1]);
+            logoExitM = toM(LOGO_EXIT[0], LOGO_EXIT[1]);
+          };
 
           const resize = () => {
             const w = host.clientWidth || 1;
             const h = host.clientHeight || 1;
             renderer!.setSize(w, h);
             program.uniforms.uResolution.value = [w, h];
+            measureLogo(w, h);
           };
           resize();
           resizeObserver = new ResizeObserver(resize);
@@ -240,6 +315,16 @@ export function PinnedPrism() {
             last = now;
             program.uniforms.uTime.value += dt;
             program.uniforms.uProgress.value = progress.v;
+            // Slide the beam anchors from the logo prism onto the procedural
+            // pyramid in lock-step with `pyReveal` (same smoothstep band), so the
+            // contact point always sits on whichever prism is currently visible.
+            const t = smoothstep(0.1, 0.28, progress.v);
+            const inHit = program.uniforms.uInHit.value as number[];
+            const exit = program.uniforms.uExit.value as number[];
+            inHit[0] = logoContactM[0] + (PROC_CONTACT[0] - logoContactM[0]) * t;
+            inHit[1] = logoContactM[1] + (PROC_CONTACT[1] - logoContactM[1]) * t;
+            exit[0] = logoExitM[0] + (PROC_EXIT[0] - logoExitM[0]) * t;
+            exit[1] = logoExitM[1] + (PROC_EXIT[1] - logoExitM[1]) * t;
             renderer!.render({ scene: mesh });
           };
           const start = () => {
@@ -292,14 +377,16 @@ export function PinnedPrism() {
             if (canvas?.parentNode) canvas.parentNode.removeChild(canvas);
             // Reset inline styles matchMedia can't revert (we set them directly).
             container.style.opacity = "";
+            container.style.background = "transparent";
             if (logo) logo.style.opacity = "";
           };
         } catch (err) {
-          // WebGL failure → the CSS gradient + logo overlay already show, so the
-          // layer is never blank. Tear down whatever was created.
+          // WebGL failure → show the soft, transparent-edged fallback glow (no
+          // hard rectangle) plus the logo overlay, so the layer is never blank.
           if (process.env.NODE_ENV !== "production") {
             console.warn("PinnedPrism init failed, using gradient fallback:", err);
           }
+          container.style.background = SOFT_FALLBACK;
           if (raf) cancelAnimationFrame(raf);
           observer?.disconnect();
           resizeObserver?.disconnect();
@@ -320,7 +407,7 @@ export function PinnedPrism() {
       ref={containerRef}
       aria-hidden="true"
       className="pointer-events-none fixed inset-y-0 right-0 z-20 hidden w-[42vw] overflow-hidden lg:block motion-reduce:lg:hidden"
-      style={{ background: FALLBACK_GRADIENT }}
+      style={{ background: "transparent" }}
     >
       <div ref={canvasHostRef} className="absolute inset-0" />
       {/* Logo + wordmark composited over the Hero beat, dissolved as it splits. */}
