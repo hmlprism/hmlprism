@@ -159,11 +159,9 @@ export function Hero() {
           animate="show"
           className="relative mx-auto max-w-md"
         >
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -z-10 rounded-[2.5rem] bg-accent/20 blur-3xl"
-          />
-
+          {/* Only the invisible entrance/float/tilt wrappers live here; the visible
+              panel (frame, halo, prism, beam, spectrum, wordmark) is rendered — and
+              removed on exit — entirely by PrismIntro, so nothing is left behind. */}
           <motion.div
             ref={panelRef}
             onMouseMove={handlePanelMove}
@@ -184,7 +182,6 @@ export function Hero() {
                     ? undefined
                     : { rotateX, rotateY, transformStyle: "preserve-3d" }
                 }
-                className="relative flex flex-col items-center gap-6 overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/5 p-10 shadow-2xl backdrop-blur-sm sm:p-14"
               >
                 <PrismIntro />
               </motion.div>
