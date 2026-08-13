@@ -11,29 +11,19 @@ import { Stagger, StaggerItem } from "@/components/Stagger";
 import { Card } from "@/components/Card";
 import { Icon, type IconName } from "@/components/Icon";
 import { ContactForm } from "@/components/ContactForm";
-import { PinnedPrism } from "@/components/PinnedPrism";
+import { SectionVideo } from "@/components/SectionVideo";
 import { services, caseStudies, stats, values } from "@/lib/site";
 
 export default function HomePage() {
   return (
     <>
-      {/* ============================================================= *
-       * Continuous pinned-prism range: Hero → Who we are → Services → *
-       * Case Studies share ONE fixed visual (PinnedPrism) anchored on *
-       * the right. Each section's content reserves the right column   *
-       * via `.pinned-container` (desktop + motion only). Everything    *
-       * from Stats onward is outside this wrapper and unaffected.      *
-       * ============================================================= */}
-      <div id="pinned-range" className="relative">
-        <PinnedPrism />
+      {/* ---------------------------------------------------------------- Hero */}
+      <Hero />
 
-        {/* -------------------------------------------------------------- Hero */}
-        <Hero />
-
-        {/* --------------------------------------------------------- Who we are */}
-        <section className="section">
-          <div className="pinned-container grid items-center gap-12 motion-safe:lg:grid-cols-1 motion-reduce:lg:grid-cols-2">
-            <Reveal from="right">
+      {/* --------------------------------------------------------- Who we are */}
+      <section className="section">
+        <div className="container grid items-center gap-12 lg:grid-cols-2">
+          <Reveal from="right">
             <div className="overflow-hidden rounded-3xl shadow-lg">
               <Image
                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1100&q=80"
@@ -78,17 +68,22 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------------------ Services */}
-      <section className="section bg-slate-50">
-        <div className="pinned-container">
+      {/* Chart clip ties to the "measurable growth" messaging. Bright footage →
+          a stronger navy overlay so the white cards + light heading stay crisp. */}
+      <section className="section relative isolate overflow-hidden bg-navy">
+        <SectionVideo
+          src="/videos/chart_looped.mp4"
+          poster="/videos/services-poster.jpg"
+          overlayClassName="bg-navy-900/80"
+        />
+        <div className="container">
           <SectionHeading
+            theme="dark"
             eyebrow="What we do"
             title="Services built to grow your business"
             description="From paid campaigns to the websites they point to — capabilities that work together to grow your business online."
           />
-          {/* Motion desktop reserves the right column → 2 up (mirroring the beam
-              splitting into three strands). Reduced-motion desktop keeps the
-              original full-width 3-up grid. */}
-          <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 motion-reduce:lg:grid-cols-3">
+          <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
               <StaggerItem key={service.slug} className="h-full">
                 <ServiceCard
@@ -103,36 +98,39 @@ export default function HomePage() {
         </div>
       </section>
 
-        {/* -------------------------------------------------------- Case studies */}
-        <section className="section">
-          <div className="pinned-container">
-            <SectionHeading
-              eyebrow="Our work"
-              title="Case studies"
-              description="Real platforms we've designed and built — from data-driven web apps to high-traffic content hubs."
-            />
-            {/* Motion desktop: left-align within the reserved column (the beams
-                have reconverged to a single focused point). Reduced-motion
-                desktop keeps the original centered max-w-4xl grid. */}
-            <Stagger className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2 motion-safe:lg:mx-0 motion-safe:lg:max-w-none">
-              {caseStudies.map((study) => (
-                <StaggerItem key={study.url} className="h-full">
-                  <CaseStudyCard
-                    name={study.name}
-                    url={study.url}
-                    domain={study.domain}
-                    category={study.category}
-                    blurb={study.blurb}
-                    tags={study.tags}
-                    icon={study.icon as IconName}
-                  />
-                </StaggerItem>
-              ))}
-            </Stagger>
-          </div>
-        </section>
-      </div>
-      {/* ===================== end #pinned-range ===================== */}
+      {/* -------------------------------------------------------- Case studies */}
+      {/* Phone-scroll clip ties to "the work we build". Bright white UI in the
+          footage → the strongest overlay so the heading stays readable. */}
+      <section className="section relative isolate overflow-hidden bg-navy">
+        <SectionVideo
+          src="/videos/phone_looped.mp4"
+          poster="/videos/case-studies-poster.jpg"
+          overlayClassName="bg-navy-900/85"
+        />
+        <div className="container">
+          <SectionHeading
+            theme="dark"
+            eyebrow="Our work"
+            title="Case studies"
+            description="Real platforms we've designed and built — from data-driven web apps to high-traffic content hubs."
+          />
+          <Stagger className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+            {caseStudies.map((study) => (
+              <StaggerItem key={study.url} className="h-full">
+                <CaseStudyCard
+                  name={study.name}
+                  url={study.url}
+                  domain={study.domain}
+                  category={study.category}
+                  blurb={study.blurb}
+                  tags={study.tags}
+                  icon={study.icon as IconName}
+                />
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
 
       {/* --------------------------------------------------------------- Stats */}
       <section className="bg-navy py-16 sm:py-20">

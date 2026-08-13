@@ -57,7 +57,9 @@
       "Bash(curl -s -X POST http://localhost:3000/__nonexistent)",
       "Bash(taskkill //F //IM node.exe)",
       "Bash(git -C \"C:/Users/User/Downloads/HMLprism\" status --short)",
-      "Bash(git -C \"C:/Users/User/Downloads/HMLprism\" diff --stat)"
+      "Bash(git -C \"C:/Users/User/Downloads/HMLprism\" diff --stat)",
+      "Bash(gh auth *)",
+      "Bash(gh api *)"
     ]
   }
 }

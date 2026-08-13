@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { SectionHeading } from "./SectionHeading";
 import { Card } from "./Card";
 import { Stagger, StaggerItem } from "./Stagger";
+import { SectionVideo } from "./SectionVideo";
 import { steps } from "@/lib/site";
 
 // Register plugins client-side only (same client-only guarding convention the
@@ -100,9 +101,18 @@ export function HowItWorks() {
   );
 
   return (
-    <section ref={rootRef} className="section">
+    <section ref={rootRef} className="section relative isolate overflow-hidden bg-navy">
+      {/* Glowing-network clip sits BEHIND the pinned step sequence as a pure
+          background layer — the GSAP pin/scrub content above is untouched. Dark
+          footage → a moderate navy overlay keeps the light step text legible. */}
+      <SectionVideo
+        src="/videos/network_looped.mp4"
+        poster="/videos/how-it-works-poster.jpg"
+        overlayClassName="bg-navy-900/75"
+      />
       <div className="container">
         <SectionHeading
+          theme="dark"
           eyebrow="How it works"
           title="Three steps to launch"
           description="A simple, transparent path from first conversation to live campaigns."
@@ -136,13 +146,13 @@ export function HowItWorks() {
             <div className="relative grid grid-cols-3">
               <div
                 aria-hidden="true"
-                className="absolute left-[16.666%] right-[16.666%] top-7 h-1 -translate-y-1/2 rounded-full bg-slate-200"
+                className="absolute left-[16.666%] right-[16.666%] top-7 h-1 -translate-y-1/2 rounded-full bg-white/15"
               >
                 <div className="hiw-fill h-full w-full origin-left rounded-full bg-accent" />
               </div>
               {steps.map((step, i) => (
                 <div key={step.title} className="flex justify-center">
-                  <span className="hiw-badge relative z-10 grid h-14 w-14 place-items-center rounded-full bg-navy text-xl font-bold text-white shadow-lg shadow-navy/20">
+                  <span className="hiw-badge relative z-10 grid h-14 w-14 place-items-center rounded-full bg-accent text-xl font-bold text-navy-900 shadow-lg shadow-black/30">
                     {i + 1}
                   </span>
                 </div>
@@ -153,8 +163,8 @@ export function HowItWorks() {
             <div className="mt-8 grid grid-cols-3 gap-8">
               {steps.map((step) => (
                 <div key={step.title} className="hiw-content text-center">
-                  <h3 className="text-lg font-bold text-navy">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  <h3 className="text-lg font-bold text-white">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-navy-100">
                     {step.description}
                   </p>
                 </div>
