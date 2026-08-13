@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, type MouseEvent } from "react";
-import Image from "next/image";
 import {
   motion,
   useMotionValue,
@@ -14,6 +13,7 @@ import { Button } from "./Button";
 import { Icon } from "./Icon";
 import { Magnetic } from "./Magnetic";
 import { SectionVideo } from "./SectionVideo";
+import { PrismIntro } from "./PrismIntro";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -186,17 +186,7 @@ export function Hero() {
                 }
                 className="relative flex flex-col items-center gap-6 overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/5 p-10 shadow-2xl backdrop-blur-sm sm:p-14"
               >
-                <Image
-                  src="/logo.svg"
-                  alt="HML Prism logo — a prism refracting light into a full spectrum"
-                  width={320}
-                  height={320}
-                  className="relative z-10 h-auto w-56 drop-shadow-[0_12px_40px_rgba(46,196,182,0.35)] sm:w-64"
-                  priority
-                />
-                <p className="relative z-10 text-center text-2xl font-bold tracking-tight text-white">
-                  HML <span className="text-accent">Prism</span>
-                </p>
+                <PrismIntro />
               </motion.div>
             </motion.div>
           </motion.div>
